@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 function ChatInput() {
   const [text, setText] = useState("");
@@ -14,6 +14,38 @@ function ChatInput() {
   interface SummarizeResponse {
     summary: string;
   }
+
+
+  //langauge detection function
+  const detectLanguage = async (text: string) => {
+    try {
+      const response = await fetch("/api/detect-language", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ text } as { text: string }),
+      });
+
+      const data = await response.json();
+      console.log(data);
+
+      if (response.ok && data.data?.language) {
+        setLanguage(data.data.language);
+      } else {
+        setLanguage("en");
+      }
+    } catch (error) {
+      console.error("Error detecting language:", error);
+      setLanguage("en");
+    }
+  };
+
+  useEffect(() => {
+    if (text.length > 10) {
+      detectLanguage(text);
+    }
+  }, [text]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,6 +89,8 @@ function ChatInput() {
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none"
             rows={6}
           />
+        </div>
+        <div>
         </div>
                 {/* Submit Button */}
                 <button
