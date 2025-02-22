@@ -11,11 +11,7 @@ function ChatInput() {
     language: string;
   }
 
-  interface SummarizeResponse {
-    summary: string;
-  }
-
-
+ 
   //langauge detection function
   const detectLanguage = async (text: string) => {
     try {
